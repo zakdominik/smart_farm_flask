@@ -1,10 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for
 from db import collection, get_all_data
-from mqtt_handler import latest_data, start_mqtt_loop
+from mqtt import latest_data, start_background_tasks
+import paho.mqtt.client as mqtt
 import plotly.graph_objs as go
 from plotly.offline import plot
 import threading
 
+start_background_tasks()
 app = Flask(__name__)
 
 def create_and_save_plot(values, label, filename, pump_lines):
@@ -45,7 +47,6 @@ def index():
 
 @app.route("/water", methods=["POST"])
 def water_plants():
-    import paho.mqtt.client as mqtt
 
     client = mqtt.Client()
     client.tls_set()
@@ -58,4 +59,4 @@ def water_plants():
     return redirect(url_for("index", watered="yes"))
 
 # Start background MQTT thread on app start
-threading.Thread(target=start_mqtt_loop, daemon=True).start()
+

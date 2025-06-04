@@ -38,3 +38,7 @@ def start_mqtt_loop():
     client.on_message = on_message
     client.connect(MQTT_BROKER, MQTT_PORT, 60)
     client.loop_forever()
+
+def start_background_tasks():
+    thread = threading.Thread(target=start_mqtt_loop, daemon=True)
+    thread.start()
