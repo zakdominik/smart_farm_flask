@@ -58,5 +58,3 @@ def water_plants():
 
     return redirect(url_for("index", watered="yes"))
 
-# Start background MQTT thread on app start
-
