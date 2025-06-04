@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="refresh" content="30">
+    <title>Smart Farm Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        table { border-collapse: collapse; margin: 20px auto; width: 80%; }
+        th, td { border: 1px solid #aaa; padding: 8px; }
+        .plot-container { margin: 40px auto; width: 90%; max-width: 900px; }
+    </style>
+</head>
+<body>
+    <h1>Smart Farm Sensor Data</h1>
+
+    <div style="
+        max-width: 500px;
+        margin: 30px auto;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        background-color: lightblue;
+        font-size: 1.2em;
+    ">
+        <h2 style="margin-top: 0; color: #333;">🌿 Latest Sensor Values</h2>
+        <p><strong>Soil Moisture:</strong>
+            <span style="color: #1e90ff;">{{ latest_soil }}</span>
+        </p>
+        <p><strong>Water Level:</strong>
+            <span style="color: #1e90ff;">{{ latest_water }}</span>
+        </p>
+    </div>
+
+    {% for message in messages %}
+        <div style="
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px 20px;
+            border: 1px solid #c3e6cb;
+            border-radius: 6px;
+            margin: 20px auto;
+            width: 60%;
+            font-weight: bold;
+        ">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <form action="/water" method="post">
+        <button type="submit" style="
+            padding: 12px 20px;
+            font-size: 1em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+        ">
+            💧 Water Plants
+        </button>
+    </form>
+
+    <h2>Sensor Data Table</h2>
+    <div style="
+        max-height: 300px;
+        overflow-y: scroll;
+        overflow-x: auto;
+        margin: 0 auto;
+        width: 80%;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    ">
+        <table style="width: 100%;">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Soil</th>
+                    <th>Water</th>
+                    <th>Pump</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                <tr>
+                    <td>{{ loop.index0 }}</td>
+                    <td>{{ item.soil }}</td>
+                    <td>{{ item.water }}</td>
+                    <td>{{ item.pump }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="plot-container">
+        <h2>Soil Moisture Over Time</h2>
+        {{ soil_plot | safe }}
+    </div>
+
+    <div class="plot-container">
+        <h2>Water Level Over Time</h2>
+        {{ water_plot | safe }}
+    </div>
+</body>
+</html>
