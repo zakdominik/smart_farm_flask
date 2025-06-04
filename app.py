@@ -102,6 +102,7 @@ def water_plants():
     flash("Watering triggered.")
     return redirect(url_for("index"))
 
-if __name__ == "__main__":
+def start_background_tasks():
     threading.Thread(target=mqtt_loop, daemon=True).start()
-    app.run(debug=True)
+
+start_background_tasks()
