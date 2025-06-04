@@ -117,12 +117,12 @@
 
     <div class="plot-container">
         <h2>Soil Moisture Over Time</h2>
-        {{ soil_plot | safe }}
+        <iframe src="{{ url_for('static', filename='soil_plot.html') }}" width="100%" height="500" frameborder="0"></iframe>
     </div>
 
     <div class="plot-container">
         <h2>Water Level Over Time</h2>
-        {{ water_plot | safe }}
+        <iframe src="{{ url_for('static', filename='water_plot.html') }}" width="100%" height="500" frameborder="0"></iframe>
     </div>
 </body>
 </html>
