@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- refreshes the page every 30 seconds so that the charts with the most recent data can be displayed -->
     <meta http-equiv="refresh" content="30">
     <title>Smart Farm Dashboard</title>
     <style>
@@ -72,18 +73,18 @@
     </style>
 </head>
 <body>
+    <!-- displays the latest sensor data and creates a button for controlling the IoT system -->
     <h1>Smart Farm Sensor Data</h1>
-
     <div class="latest-values">
         <h2>🌿 Latest Sensor Values</h2>
         <p><strong>Soil Moisture:</strong> <span>{{ latest_soil }}</span></p>
         <p><strong>Water Level:</strong> <span>{{ latest_water }}</span></p>
     </div>
-
     <form action="/water" method="post">
         <button type="submit" class="water-button">💧 Water Plants</button>
     </form>
 
+    <!-- Display the table containing all values, most recent being at the top -->
     <h2>Sensor Data Table</h2>
     <div class="scrollable-table">
         <table>
@@ -108,14 +109,15 @@
         </table>
     </div>
 
+    <!-- Displays moisture and water level charts -->
     <div class="plot-container">
         <h2>Soil Moisture</h2>
         <img src="{{ url_for('static', filename='soil_plot.png') }}" alt="Soil Moisture Chart" width="100%">
     </div>
-
     <div class="plot-container">
         <h2>Water Level</h2>
         <img src="{{ url_for('static', filename='water_plot.png') }}" alt="Water Level Chart" width="100%">
     </div>
+
 </body>
 </html>

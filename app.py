@@ -7,34 +7,30 @@ import matplotlib.pyplot as plt
 start_background_tasks() #enables Heroku to run both the mqtt connection and the app
 app = Flask(__name__)
 
-def create_and_save_plot(values, label, filename, pump_lines):
+#function for creating line chart with points
+def create_and_save_plot(values, label, filename):
     plt.figure(figsize=(8, 4))
     plt.plot(values, marker='o', label=label)
-
-    # Add red vertical lines where pump was ON
-    for i in pump_lines:
-        plt.axvline(x=i, color='red', linestyle='--', linewidth=1)
-
     plt.title(label)
-    plt.xlabel("Time")
+    plt.xlabel("Count")
     plt.ylabel("Value")
     plt.tight_layout()
     plt.savefig(f"static/{filename}")
     plt.close()
 
+#route for the main page, calls the plot functons, gets the data to be dislayed, sends it to index.html
 @app.route("/")
 def index():
+
     data = get_all_data()
 
     soil = [d["soil"] for d in data]
     water = [d["water"] for d in data]
-    pump_lines = [i for i, d in enumerate(data) if d.get("pump")]
-
     latest_soil = soil[0] if soil else "N/A"
     latest_water = water[0] if water else "N/A"
 
-    create_and_save_plot(soil, "Soil Moisture", "soil_plot.png", pump_lines)
-    create_and_save_plot(water, "Water Level", "water_plot.png", pump_lines)
+    create_and_save_plot(soil, "Soil Moisture", "soil_plot.png")
+    create_and_save_plot(water, "Water Level", "water_plot.png")
 
     watered = request.args.get("watered") == "yes"
 
