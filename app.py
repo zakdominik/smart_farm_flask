@@ -44,11 +44,21 @@ def index():
 #the smart watering system receives this message and starts watering
 @app.route("/water", methods=["POST"])
 def water_plants():
-    client = mqtt.Client()
-    client.tls_set()
-    client.username_pw_set(mqtt_user, mqtt_password)
-    client.connect(mqtt_broker_connection, port, 60)
-    result = client.publish("smartfarm/pump_command", "on")
-    client.disconnect()
-    return redirect(url_for("index", watered="yes"))
+    try:
+        client = mqtt.Client()
+        client.tls_set()
+        client.username_pw_set(mqtt_user, mqtt_password)
+        client.connect(mqtt_broker_connection, port, 60)
+
+        client.loop_start()
+        result = client.publish("smartfarm/pump_command", "on")
+        print("Publish result code:", result.rc)
+        time.sleep(1)
+        client.loop_stop()
+        client.disconnect()
+
+        return redirect(url_for("index", watered="yes"))
+    except Exception as e:
+        print("Error in water_plants route:", e)
+        return redirect(url_for("index", watered="error"))
 
