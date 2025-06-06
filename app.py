@@ -10,7 +10,7 @@ app = Flask(__name__)
 #function for creating line chart with points
 def create_and_save_plot(values, label, filename):
     plt.figure(figsize=(8, 4))
-    plt.plot(values, marker='o', label=label)
+    plt.plot(values[::-1], marker='o', label=label)
     plt.title(label)
     plt.xlabel("Count")
     plt.ylabel("Value")
