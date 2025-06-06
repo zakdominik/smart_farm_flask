@@ -18,7 +18,7 @@ def create_and_save_plot(values, label, filename):
     plt.savefig(f"static/{filename}")
     plt.close()
 
-#route for the main page, calls the plot functons, gets the data to be dislayed, sends it to index.html
+#route for the main page, calls the plot functions, gets the data to be displayed, sends it to index.html
 @app.route("/")
 def index():
 

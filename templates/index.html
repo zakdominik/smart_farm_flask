@@ -76,12 +76,12 @@
     <!-- displays the latest sensor data and creates a button for controlling the IoT system -->
     <h1>Smart Farm Sensor Data</h1>
     <div class="latest-values">
-        <h2>🌿 Latest Sensor Values</h2>
+        <h2>Latest Sensor Values</h2>
         <p><strong>Soil Moisture:</strong> <span>{{ latest_soil }}</span></p>
         <p><strong>Water Level:</strong> <span>{{ latest_water }}</span></p>
     </div>
     <form action="/water" method="post">
-        <button type="submit" class="water-button">💧 Water Plants</button>
+        <button type="submit" class="water-button">Water Plants</button>
     </form>
 
     <!-- Display the table containing all values, most recent being at the top -->
