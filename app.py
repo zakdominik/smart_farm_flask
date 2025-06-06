@@ -3,6 +3,7 @@ from db import get_all_data
 from mqtt import *
 import paho.mqtt.client as mqtt
 import matplotlib.pyplot as plt
+import time
 
 start_background_tasks() #enables Heroku to run both the mqtt connection and the app
 app = Flask(__name__)
@@ -49,10 +50,8 @@ def water_plants():
         client.tls_set()
         client.username_pw_set(mqtt_user, mqtt_password)
         client.connect(mqtt_broker_connection, port, 60)
-
         client.loop_start()
         result = client.publish("smartfarm/pump_command", "on")
-        print("Publish result code:", result.rc)
         time.sleep(1)
         client.loop_stop()
         client.disconnect()
