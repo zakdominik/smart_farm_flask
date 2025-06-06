@@ -1,27 +1,26 @@
 from flask import Flask, render_template, request, redirect, url_for
-from db import collection, get_all_data
-from mqtt import latest_data, start_background_tasks
+from db import get_all_data
+from mqtt import *
 import paho.mqtt.client as mqtt
-import plotly.graph_objs as go
-from plotly.offline import plot
-import threading
+import matplotlib.pyplot as plt
 
-start_background_tasks()
+start_background_tasks() #enables Heroku to run both the mqtt connection and the app
 app = Flask(__name__)
 
 def create_and_save_plot(values, label, filename, pump_lines):
-    trace = go.Scatter(x=list(range(len(values))), y=values, mode="lines+markers",
-                       name=label, line=dict(color="blue"))
+    plt.figure(figsize=(8, 4))
+    plt.plot(values, marker='o', label=label)
 
-    pump_markers = [
-        go.Scatter(x=[i, i], y=[0, max(values) if values else 1], mode='lines',
-                   line=dict(color='red'), name='Pump ON', showlegend=False)
-        for i in pump_lines
-    ]
+    # Add red vertical lines where pump was ON
+    for i in pump_lines:
+        plt.axvline(x=i, color='red', linestyle='--', linewidth=1)
 
-    fig = go.Figure([trace] + pump_markers)
-    fig.update_layout(title=label)
-    fig.write_html(f"static/{filename}", include_plotlyjs="cdn")
+    plt.title(label)
+    plt.xlabel("Time")
+    plt.ylabel("Value")
+    plt.tight_layout()
+    plt.savefig(f"static/{filename}")
+    plt.close()
 
 @app.route("/")
 def index():
@@ -34,8 +33,8 @@ def index():
     latest_soil = soil[0] if soil else "N/A"
     latest_water = water[0] if water else "N/A"
 
-    create_and_save_plot(soil, "Soil Moisture", "soil_plot.html", pump_lines)
-    create_and_save_plot(water, "Water Level", "water_plot.html", pump_lines)
+    create_and_save_plot(soil, "Soil Moisture", "soil_plot.png", pump_lines)
+    create_and_save_plot(water, "Water Level", "water_plot.png", pump_lines)
 
     watered = request.args.get("watered") == "yes"
 
@@ -45,16 +44,15 @@ def index():
                            latest_water=latest_water,
                            watered=watered)
 
+#route used for handling the Water Plants button. if the button is clicked then message on gets sent to mqtt
+#the smart watering system receives this message and starts watering
 @app.route("/water", methods=["POST"])
 def water_plants():
-
     client = mqtt.Client()
     client.tls_set()
-    client.username_pw_set("client1", "Password1")
-    client.connect("5d8958dd403d415196e6c9e009168278.s1.eu.hivemq.cloud", 8883, 60)
+    client.username_pw_set(mqtt_user, mqtt_password)
+    client.connect(mqtt_broker_connection, port, 60)
     result = client.publish("smartfarm/pump_command", "on")
-    print("📡 Publish result:", result.rc)
     client.disconnect()
-
     return redirect(url_for("index", watered="yes"))
 

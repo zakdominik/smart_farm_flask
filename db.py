@@ -1,17 +1,14 @@
 from pymongo import MongoClient
 
-# MongoDB Atlas connection string
-MONGO_URI = "mongodb+srv://farmuser:farm12345@cluster88013.uygbstv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster88013"
-
-# Establish the connection
-mongo_client = MongoClient(MONGO_URI)
-
-# Get the database and collection
+#url link for connecting to the MongoDB database
+mongo_link = "mongodb+srv://farmuser:farm12345@cluster88013.uygbstv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster88013"
+#connects to Mongo, gets the smartfarm database and selects all readings
+mongo_client = MongoClient(mongo_link)
 db = mongo_client.smartfarm
 collection = db.readings
 
-# Optional helper function
+#function for getting all the readings from the system
 def get_all_data():
     data = list(collection.find({}, {"_id": 0}))
-    data.reverse()  # Newest first
+    data.reverse()
     return data
